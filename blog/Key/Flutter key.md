@@ -2,7 +2,7 @@
 
 ##### key
 新创建一个Flutter Application的时候，默认生成的代码里面有这么一段
-```
+```dart
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
   
@@ -74,7 +74,7 @@ class StatelessContainer extends StatelessWidget {
 ![stateless](https://raw.githubusercontent.com/whqfor/sources/master/blog/Key/stateless.gif)
 
 ##### 场景二：stateful without key
-```
+```dart
 class StatefulContainer extends StatefulWidget {
   StatefulContainer({Key key}) : super(key: key);
   @override
@@ -96,7 +96,7 @@ class _StatefulContainerState extends State<StatefulContainer> {
 }
 ```
 当我们把`List<Widget> widgets`中的`StatelessContainer`换成`StatefulContainer`之后，即
-```
+```dart
 List<Widget> widgets = [
   StatelessContainer(),
   StatelessContainer(),
@@ -110,7 +110,7 @@ List<Widget> widgets = [
 
 ##### 场景三：stateful with key
 还是用上面的`StatefulContainer`，在`List<Widget> widgets`中添加上`key`，即
-```
+```dart
 List<Widget> widgets = [
     StatefulContainer(
       key: UniqueKey(),
@@ -128,7 +128,7 @@ List<Widget> widgets = [
 先说几个概念吧，咱们平时编写的Flutter UI 代码操的都是 `widget tree`，除了这棵树，flutter 还有`element tree`和`rendObject tree`，其中widget是不可变的，是用来描述element，当widget进行改变的时候，会重新创建新的widget，这时候element不一定会重新创建。
 
 widget的源码里面，有这样一个方法：
-```
+```dart
 @immutable
 abstract class Widget extends DiagnosticableTree {
   const Widget({ this.key });
@@ -147,7 +147,7 @@ abstract class Widget extends DiagnosticableTree {
 ![stateless](https://raw.githubusercontent.com/whqfor/sources/master/blog/Key/stateless.png)
 
 至于场景二，同样由于没有传key，只做runtimeType比较，更新element，但为啥不变颜色呐。这个问题要从stateful本身说起，大家知道stateful是有state来管理其状态改变。element和state一一对应，下面是官方的解释。
-```
+```dart
 /// The [State] instance associated with this location in the tree.
 /// There is a one-to-one relationship between [State] objects and the
 /// [StatefulElement] objects that hold them. The [State] objects are created
@@ -168,7 +168,7 @@ abstract class Widget extends DiagnosticableTree {
 ##### 比较范围
 
 对widget的更新机制有一定了解后，咱们看最后一个例子吧。
-```
+```dart
 List<Widget> widgets = [
     Padding(
 //      key: UniqueKey(),
