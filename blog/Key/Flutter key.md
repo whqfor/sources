@@ -70,6 +70,7 @@ class StatelessContainer extends StatelessWidget {
 }
 ```
 首先使用两个StatelessWidget进行测试，点击下方按钮，两个方块进行了交换。
+
 ![stateless](https://raw.githubusercontent.com/whqfor/sources/master/blog/Key/stateless.gif)
 
 ##### 场景二：stateful without key
@@ -102,6 +103,7 @@ List<Widget> widgets = [
 ];
 ```
 再点击按钮，会发现没有任何变化，这是为什么呐？
+
 ![stateless](https://raw.githubusercontent.com/whqfor/sources/master/blog/Key/statefulWithoutKey.gif)
 
 稍安勿躁，再看第三个场景
@@ -119,6 +121,7 @@ List<Widget> widgets = [
   ];
 ```
 再次点击按钮发现两个方块又能交换了。
+
 ![stateless](https://raw.githubusercontent.com/whqfor/sources/master/blog/Key/statefulWithKey.gif)
 
 ##### widget的更新机制
@@ -140,6 +143,7 @@ abstract class Widget extends DiagnosticableTree {
 通过这个方法去判断，`newWidget`是否可以更新`oldWidget`对应的element。如果可以更新，则`element`还是使用`oldWidget`对应的element，只是使用新创建的widget对这个element进行更新。
 
 这样也就解释了场景一只使用stateless widget时发生交换，两个widget的runtimeType一致，又没有传key，canUpdate返回true，这时候将element更新为对应的颜色。
+
 ![stateless](https://raw.githubusercontent.com/whqfor/sources/master/blog/Key/stateless.png)
 
 至于场景二，同样由于没有传key，只做runtimeType比较，更新element，但为啥不变颜色呐。这个问题要从stateful本身说起，大家知道stateful是有state来管理其状态改变。element和state一一对应，下面是官方的解释。
@@ -150,13 +154,16 @@ abstract class Widget extends DiagnosticableTree {
 /// by [StatefulElement] in [mount].
 ```
 在statefulContainer中的颜色是定义在state中的，虽然交换了widget，但是其element及对应的state并没有发生改变，所以方块看起来没有任何变化。
+
 ![无key交换](https://raw.githubusercontent.com/whqfor/sources/master/blog/Key/无key交换.png)
 
 对于场景三由于加上key之后canUpdate返回false（runtimeType 相同，key 不同），不能再更新element，这时候旧的`widget`和`element`的关联关系发生了改变
+
 ![不匹配移除](https://raw.githubusercontent.com/whqfor/sources/master/blog/Key/不匹配移除.png)
-此时 RenderObjectElement 会用新 Widget 的 key 在老 Element 列表里面查找，找到匹配的则会更新 Element 的位置并更新对应 renderObject 的位置。
+
+此时 RenderObjectElement 会用新 Widget 的 key 在老 Element 列表里面查找，找到匹配的则会更新 Element 的位置并更新对应 renderObject 的位置,所以颜色发生了变化。
+
 ![查找](https://raw.githubusercontent.com/whqfor/sources/master/blog/Key/查找.png)
-所以颜色发生了变化。
 
 ##### 比较范围
 
@@ -180,9 +187,13 @@ List<Widget> widgets = [
   ];
 ```
 在场景三：stateful with key的widget之上包一层padding，这时候点击按钮你将会看到，每次颜色都会发生变化
+
 ![padding](https://raw.githubusercontent.com/whqfor/sources/master/blog/Key/padding.gif)
+
 这是由于Flutter的比较算法（diff）是有范围的，它是对特定层级进行比较，
+
 ![padding](https://raw.githubusercontent.com/whqfor/sources/master/blog/Key/paddinng.png)
+
 这里首先比较padding，其runtimeType一致，所以交换两个widget时，只会更新其element，然后再比较下一个层级，在这个`层级`并不能找到一个和自己相同的key valu，所以会创建一个新的。之前stateful 两个节点都在一个row 节点内，属于同一个层级，所以虽然交换了之后，在同一个层级内能找到相同key的element，因此并不会创建新的element。
 statefulContainery每次都是重新创建的，所以每次看到的效果是一直在变化颜色。
 将最后一个场景注释掉的代码打开，即给padding也加一个key，这种情况就和场景三是一样的，key对应不上，移除匹配关系，然后在同一层级重新查找，更新widget和element对应关系。
