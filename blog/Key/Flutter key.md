@@ -224,9 +224,9 @@ GlobalKey是全局的，可以保存widget中任何地方使用，而不用担�
 
 最后补充一点，在测试场景二的时候，交换了widget，虽然两个widget的描述信息完全一样，并且element也没有重新创建，但是build每次都会执行，我的理解是，widget和element的对应关系发生了改变，因此会重新执行build。具体还需要看updatechild 里面的执行是怎么触发了widget build。
 
-
-
-
+##### 参考文章
+[Flutter|深入浅出Key](https://juejin.im/post/5ca2152f6fb9a05e1a7a9a26#heading-13)
+[何时使用密钥 - Flutter小部件 101 第四集](https://www.youtube.com/watch?v=kn0EOS-ZiIc)
 
 
 
